@@ -1,10 +1,12 @@
 {
   "name": "ydb-table-defs",
-  "version": "1.0.4",
+  "version": "1.0.0",
   "description": "simplify table definition, additional package to YDB-SDK",
-  "main": "build/index.js",
+  "files": [
+    "build/**"
+  ],
   "scripts": {
-    "ex1": "ts-node -r tsconfig-paths/register ./src/examples/basic-example-new-way/index.ts",
+    "example1": "ts-node -r tsconfig-paths/register ./src/examples/basic-example-new-way/index.ts",
     "build:lib": "npm run clean && tsc",
     "clean": "rimraf -rf build",
     "release": "standard-version"

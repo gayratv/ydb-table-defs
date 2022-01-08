@@ -53,8 +53,6 @@ declare module 'ydb-sdk' {
     }
 }
 
-Ydb.Table.TransactionSettings.prototype.walk = (location: string) => `Likes to walk in the ${location}`;
-
 Session.prototype.beginTransactionQuick = function (
     txType: TransactionType,
     allowInconsistentReads?: boolean | null,

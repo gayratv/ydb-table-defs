@@ -1,6 +1,6 @@
 import { driver, initYDBdriver } from '../utils/ydb-functions';
 import { Session, Ydb } from 'ydb-sdk';
-import '@/helpers/augmentation';
+import '../../src/helpers/ydb-sdk-augmentation';
 
 (async function run() {
     await initYDBdriver(); // если не удалось инициализация - то внутри идет process.exit

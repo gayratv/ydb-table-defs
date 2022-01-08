@@ -337,20 +337,6 @@ export class TypedDataDefs extends TypedData {
         return await withRetries(fillTable);
     }
 
-    /*
-    Так не работает
-    static async createDBTable(session: Session, logger: Logger ) {
-
-        const YQLCreateTable =  this.refMetaData.YQLCreateTable;
-
-        async function createTable() {
-            logger.info('Creating table...');
-                await session.executeQuery(YQLCreateTable);
-        }
-
-        await withRetries(createTable);
-    }*/
-
     static async createDBTable(session: Session, logger: Logger) {
         logger.info('Creating table... ' + this.refMetaData.tableName);
 
@@ -383,7 +369,6 @@ export const primitiveTypeIdToName: Record<string, string> = {};
 
 function initPrimitiveTypeIdToName() {
     for (const itm of Object.entries(Type.PrimitiveTypeId)) {
-        // @ts-ignore
         primitiveTypeIdToName[itm[1]] = itm[0];
     }
 }

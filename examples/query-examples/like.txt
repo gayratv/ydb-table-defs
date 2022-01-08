@@ -1,0 +1,3 @@
+SELECT
+    string_column LIKE @@_ вася@@
+FROM (values(@@_ вася@@)) as t(string_column);

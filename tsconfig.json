@@ -2,9 +2,10 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "commonjs",
-    "outDir": "build",
     "moduleResolution": "node",
     "esModuleInterop": true,     /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "isolatedModules": false,    /* "Ensure that each file can be safely transpiled without relying on other imports." */
+    "outDir": "build",
     "pretty": true,
     "newLine": "lf",
     "stripInternal": true,
