@@ -1,21 +1,13 @@
 {
-  "name": "ydb-table-defs",
-  "version": "0.0.1",
-  "description": "simplify table definition, additional package to YDB-SDK",
+  "name": "ydb-table-defs-examples",
+  "version": "1.0.0",
+  "description": "examples for ydb-table-defs",
   "scripts": {
     "example1": "ts-node -r tsconfig-paths/register ./src/examples/basic-example-new-way/index.ts",
     "build:lib": "npm run clean && tsc",
     "clean": "rimraf -rf build",
-    "release": "standard-version -f"
+    "release": "standard-version"
   },
-  "files": [
-    "build/**"
-  ],
-  "main": "build/index.js",
-  "keywords": [
-    "ydb",
-    "sdk"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Ulibka68/ydb-table-defs"
@@ -24,7 +16,6 @@
   "license": "Apache",
   "dependencies": {
     "dotenv": "^10.0.0",
-    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
@@ -36,8 +27,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.5.1",
-    "rimraf": "^3.0.2",
-    "standard-version": "^9.3.2",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.12.0",
     "typescript": "^4.5.4"

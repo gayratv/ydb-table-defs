@@ -1,0 +1,21 @@
+#npm
+npm-debug.log*
+node_modules
+
+#temporary
+tmp/
+temp/
+build/
+
+#personal
+.idea/
+.DS_Store
+
+# git merge leftovers
+*.orig
+
+# secrets
+secrets/*
+service_account_key_file.json
+
+/package-lock.json
