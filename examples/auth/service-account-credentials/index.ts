@@ -1,4 +1,5 @@
-import {main} from '../../utils';
-import {options, run} from './snippet';
+import { initYDBdriver } from '../../utils/ydb-functions';
 
-main(run, options);
+(async () => {
+    await initYDBdriver();
+})();

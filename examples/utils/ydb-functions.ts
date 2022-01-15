@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config({ path: 'env.local' });
 
 import { getLogger, Driver, getCredentialsFromEnv, Session, Logger } from 'ydb-sdk';
-import { primitiveTypeIdToName } from '@/types';
+import { primitiveTypeIdToName } from 'ydb-table-defs';
 import { ColorConsole, CT } from './color-console';
 
 export const databaseName = process.env.DATABASENAME!;

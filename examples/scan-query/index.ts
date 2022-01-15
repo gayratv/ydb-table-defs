@@ -4,78 +4,23 @@ import { Column, Logger, Primitive, Session, TableDescription, withRetries, Ydb 
 import { Row } from './data-helpers';
 import { initYDBdriver, logger, databaseName, driver } from '../utils/ydb-functions';
 
-const TABLE = 'table';
+const TABLE = 'scan_query';
 
-export async function createTable(session: Session, logger: Logger) {
-    logger.info('Dropping old table...');
-    await session.dropTable(TABLE);
+function fillRows(startBatch: number) {
+    const rows: Row[] = [];
 
-    logger.info('Creating table...');
-    await session.createTable(
-        TABLE,
-        new TableDescription()
-            .withColumn(
-                new Column(
-                    'key',
-                    Ydb.Type.create({ optionalType: { item: { typeId: Ydb.Type.PrimitiveTypeId.UTF8 } } })
-                )
-            )
-            .withColumn(
-                new Column(
-                    'hash',
-                    Ydb.Type.create({ optionalType: { item: { typeId: Ydb.Type.PrimitiveTypeId.UINT64 } } })
-                )
-            )
-            .withColumn(
-                new Column(
-                    'value',
-                    Ydb.Type.create({ optionalType: { item: { typeId: Ydb.Type.PrimitiveTypeId.UTF8 } } })
-                )
-            )
-            .withPrimaryKey('key')
-    );
+    for (let i = startBatch; i < startBatch + 1000; ++i) {
+        rows.push(new Row({ key: String(i), hash: i, value: i % 2 === 0 ? 'even' : 'odd' }));
+    }
+    return Row.asTypedCollection(rows);
 }
 
-export async function fillTableWithData(tablePathPrefix: string, session: Session, logger: Logger) {
-    const query = `
-PRAGMA TablePathPrefix("${tablePathPrefix}");
-
-DECLARE $data AS List<Struct<
-    key: Utf8,
-    hash: Uint64,
-    value: Utf8>>;
-
-REPLACE INTO ${TABLE}
-SELECT
-    key,
-    hash,
-    value
-FROM AS_TABLE($data);`;
-
-    let preparedQuery: Ydb.Table.PrepareQueryResult;
-
-    async function prepareQueryTable() {
-        logger.info('Inserting data to table, preparing query...');
-        preparedQuery = await session.prepareQuery(query);
-        logger.info('Query has been prepared, executing...');
+export async function fillTableWithData(session: Session) {
+    // вставим 10 тысяч строк
+    for (let i = 0; i < 10; i++) {
+        const rows = fillRows(i * 1000);
+        await session.bulkUpsert(`${databaseName}/${TABLE}`, rows as Ydb.TypedValue);
     }
-
-    async function fillTable() {
-        const rows: Row[] = [];
-
-        for (let i = 0; i < 30000; ++i) {
-            rows.push(new Row({ key: String(i), hash: i, value: i % 2 === 0 ? 'even' : 'odd' }));
-            if (rows.length === 1000) {
-                await session.executeQuery(preparedQuery, {
-                    $data: Row.asTypedCollection(rows),
-                });
-                rows.length = 0;
-            }
-        }
-    }
-
-    await prepareQueryTable();
-    await withRetries(fillTable);
 }
 
 function formatFirstRows(rows?: Ydb.IValue[] | null) {
@@ -94,13 +39,9 @@ row count: ${result.resultSet.rows?.length},
 first rows: ${formatFirstRows(result.resultSet.rows)}`;
 }
 
-export async function executeScanQueryWithParams(
-    tablePathPrefix: string,
-    session: Session,
-    logger: Logger
-): Promise<void> {
+export async function executeScanQueryWithParams(session: Session): Promise<void> {
     const query = `
-        PRAGMA TablePathPrefix("${tablePathPrefix}");
+        PRAGMA TablePathPrefix("${databaseName}");
 
         DECLARE $value AS Utf8;
 
@@ -126,16 +67,13 @@ export async function executeScanQueryWithParams(
     logger.info(`Stream scan query completed, partial result count: ${count}`);
 }
 
-async function run() {
-    await driver.tableClient.withSession(async (session) => {
-        // await createTable(session, logger);
-        // await fillTableWithData(databaseName, session, logger);
-        await executeScanQueryWithParams(databaseName, session, logger);
-    });
-    await driver.destroy();
-}
-
 (async function () {
     await initYDBdriver();
-    await run();
+
+    await driver.tableClient.withSession(async (session) => {
+        await Row.createDBTable(session, logger);
+        await fillTableWithData(session);
+        await executeScanQueryWithParams(session);
+    });
+    await driver.destroy();
 })();

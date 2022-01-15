@@ -1,4 +1,0 @@
-$value = "Вася ел та-та  банан и сосал сушку"u;
-$capture = Re2::Capture(@@(?i:вася)(банан)@@);
-
-SELECT  $capture($value) AS capture;

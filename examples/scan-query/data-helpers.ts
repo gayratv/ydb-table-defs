@@ -1,25 +1,21 @@
-import {declareType, TypedData, Ydb} from 'ydb-sdk';
+import { Ydb } from 'ydb-sdk';
+import { ConvertStructToTypes, TypedDataDefs } from 'ydb-table-defs';
+import { databaseName } from '../utils/ydb-functions';
 
-export interface IRow {
-    key: string;
-    hash: number;
-    value: string;
-}
+const Pt = Ydb.Type.PrimitiveTypeId;
 
-export class Row extends TypedData {
-    @declareType({typeId: Ydb.Type.PrimitiveTypeId.UTF8})
-    public key: string;
+const row_def = {
+    key: { val: 'key', pt: Pt.UTF8, opt: 'r', pk: true },
+    hash: { val: 0, pt: Pt.UINT64, opt: 0 },
+    value: { val: 'value', pt: Pt.UTF8, opt: 0 },
+};
 
-    @declareType({typeId: Ydb.Type.PrimitiveTypeId.UINT64})
-    public hash: number;
+export type IRow = ConvertStructToTypes<typeof row_def>;
 
-    @declareType({typeId: Ydb.Type.PrimitiveTypeId.UTF8})
-    public value: string;
-
+export class Row extends TypedDataDefs {
     constructor(data: IRow) {
         super(data);
-        this.key = data.key;
-        this.hash = data.hash;
-        this.value = data.value;
     }
 }
+
+Row.initTableDef(databaseName, 'scan_query', row_def);

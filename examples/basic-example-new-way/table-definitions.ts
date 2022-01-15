@@ -1,5 +1,5 @@
 import { Ydb } from 'ydb-sdk';
-import { ConvertStructToTypes, TypedDataDefs } from '@/types';
+import { ConvertStructToTypes, TypedDataDefs } from 'ydb-table-defs';
 import { databaseName } from '../utils/ydb-functions';
 
 const Pt = Ydb.Type.PrimitiveTypeId;

@@ -1,5 +1,6 @@
 import { driver, initYDBdriver } from '../utils/ydb-functions';
 import { Session } from 'ydb-sdk';
+import { fillTransactionSettings } from 'ydb-table-defs';
 
 /*
 Подготовка:
@@ -20,10 +21,10 @@ https://console.cloud.yandex.ru/
 
     await driver.tableClient.withSession(async (session: Session) => {
         // первый запрос - начинаем транзакцию, но не комитим ее, используем хелпер
-        const data = await session.executeQueryQuick(
+        const data = await session.executeQuery(
             "upsert into series (series_id, title) values (11,'11')", // query
             {}, // params
-            { txType: 'serializableReadWrite', commitTx: false }
+            { beginTx: fillTransactionSettings('serializableReadWrite'), commitTx: false }
         );
 
         // по завершении запроса мы получим ID транзакции в  data.txMeta.id;

@@ -1,5 +1,6 @@
 import { driver, initYDBdriver } from '../utils/ydb-functions';
 import { Session } from 'ydb-sdk';
+import { fillTransactionSettings, fillTimeOuts } from 'ydb-table-defs';
 
 /*
 Подготовка:
@@ -19,25 +20,20 @@ https://console.cloud.yandex.ru/
     await initYDBdriver(); // если не удалось инициализация - то внутри идет process.exit
 
     await driver.tableClient.withSession(async (session: Session) => {
-        // первый запрос - начинаем транзакцию, но не комитим ее, используем хелпер
-        const data = await session.executeQueryQuick(
+        //  начинаем транзакцию,и сразу закрываем ее
+        const data = await session.executeQuery(
             "upsert into series (series_id, title) values (11,'11')", // query
             {}, // params
-            { txType: 'serializableReadWrite', commitTx: false }
+            { beginTx: fillTransactionSettings('serializableReadWrite'), commitTx: true },
+            fillTimeOuts(3, 3) // параметры operationMode, labels, reportCostInfo в настоящий момент не используются в SDK, поэтому заполнять их не требуется
         );
 
         // по завершении запроса мы получим ID транзакции в  data.txMeta.id;
         if (!data.txMeta?.id) {
             throw new Error('не удалось открыть транзакцию');
         }
-        // второй запрос - посылаем второй запрос и закрываем транзакцию
-        const data2 = await session.executeQuery(
-            "upsert into series (series_id, title) values (12,'12')", // query
-            {}, // params
-            { txId: data.txMeta.id, commitTx: true } // txControl
-        );
 
-        console.log(data2);
+        console.log(data);
     });
 
     await driver.destroy();

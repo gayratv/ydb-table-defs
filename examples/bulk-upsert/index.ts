@@ -2,7 +2,7 @@ import { Session, Ydb } from 'ydb-sdk';
 import { LogMessage } from './table-definitions';
 import { initYDBdriver, logger, driver, databaseName } from '../utils/ydb-functions';
 
-const TABLE_NAME = 'bulk_upsert/log_messages';
+const TABLE_NAME = 'log_messages';
 const BATCH_SIZE = 1000;
 
 const now = Date.now();

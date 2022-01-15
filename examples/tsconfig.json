@@ -4,27 +4,28 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,     /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
-    "isolatedModules": false,    /* "Ensure that each file can be safely transpiled without relying on other imports." */
+
     "outDir": "build",
-    "pretty": true,
-    "newLine": "lf",
-    "stripInternal": true,
     "strict": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noEmitOnError": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+
+    "strictPropertyInitialization": false, /* "Check for class properties that are declared but not set in the constructor.\n\nSee more: https://www.typescriptlang.org/tsconfig#strictPropertyInitialization" */
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "not",
+    "build",
+    "worked"
   ],
 
 }
