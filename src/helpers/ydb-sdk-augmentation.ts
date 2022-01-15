@@ -2,17 +2,17 @@
 // import './helpers/augmentation';
 
 import { Ydb, Session, ExecDataQuerySettings, AUTO_TX } from 'ydb-sdk';
-import { fillTimeOuts, fillTransactionSettings, TransactionType } from '@/helpers/index';
+import { fillTimeOuts, fillTransactionSettings, TransactionType } from './index';
 
-interface IQueryParams {
+export interface IQueryParams {
     [k: string]: Ydb.ITypedValue;
 }
 
-interface IExistingTransaction {
+export interface IExistingTransaction {
     txId: string;
 }
 
-interface INewTransaction {
+export interface INewTransaction {
     txType: TransactionType;
     commitTx?: boolean;
     allowInconsistentReads?: boolean | null;
@@ -65,6 +65,7 @@ Session.prototype.beginTransactionQuick = function (
     );
 };
 
+// side effect
 Session.prototype.executeQueryQuick = async function (
     query: Ydb.Table.PrepareQueryResult | string,
     params?: IQueryParams,
@@ -80,7 +81,7 @@ Session.prototype.executeQueryQuick = async function (
         } else {
             txControlC = {
                 beginTx: fillTransactionSettings(txControl?.txType, txControl?.allowInconsistentReads),
-                commitTx: true,
+                commitTx: false,
             };
             if (txControl.commitTx) txControlC.commitTx = txControl.commitTx;
         }

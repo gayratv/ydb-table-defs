@@ -1,6 +1,6 @@
 {
   "name": "ydb-table-defs",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "simplify table definition, additional package to YDB-SDK",
   "scripts": {
     "example1": "ts-node -r tsconfig-paths/register ./src/examples/basic-example-new-way/index.ts",

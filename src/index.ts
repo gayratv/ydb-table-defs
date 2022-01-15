@@ -1,3 +1,7 @@
+import './helpers/ydb-sdk-augmentation';
+
+export { IQueryParams, IExistingTransaction, INewTransaction } from './helpers/ydb-sdk-augmentation';
+
 export {
     ConvertStructToTypes,
     TypedDataFieldDescription,
@@ -10,4 +14,5 @@ export {
     declareTypePrim,
     declareTypeNull,
 } from './types';
+
 export { TransactionType, fillTransactionSettings, fillTimeOuts, beginTransactionQuick } from './helpers';

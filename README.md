@@ -705,26 +705,49 @@ async streamReadTable(
 
 ## <a name="fillTransactionSettings">fillTransactionSettings</a>
 
-Заполняет типы транзакций в YDB-SDK более понятным способом
+Заполняет типы транзакций в YDB-SDK более понятным способом.
+Данный метод используется при заполнении параметров новой транзакции txControl в методе  executeQuery, формирует новую транзакцию.
 
 ```
+export type TransactionType = 'serializableReadWrite' | 'onlineReadOnly' | 'staleReadOnly';
+
 fillTransactionSettings(
     txType: TransactionType,
     allowInconsistentReads?: boolean | null
 )
 ```
 
+**Пример**
+```sql
+ const data = await session.executeQuery(
+            "upsert into series (series_id, title) values (11,'11')", // query
+            {}, // params
+            { beginTx: fillTransactionSettings('serializableReadWrite'), commitTx: false }
+        );
+```
+
 ## <a name="fillTimeOuts">fillTimeOuts</a>
 
 Заполняет параметры таймаутов для транзакций  в YDB-SDK более понятным способом
+
+С помощью данного хелпера Вы можете заполнить такие параметры как operationTimeout и cancelAfter параметра operationParams метода executeQuery.
 
 ```
 fillTimeOuts(
 	operationTimeout?: number,
 	cancelAfter?: number)
 ```
+**Пример**
+```sql
+ const data = await session.executeQuery(
+            "upsert into series (series_id, title) values (11,'11')", // query
+            {}, // params
+            { beginTx: fillTransactionSettings('serializableReadWrite'), commitTx: true },
+            fillTimeOuts(3, 3) // параметры operationMode, labels, reportCostInfo в настоящий момент не используются в SDK, поэтому заполнять их не требуется
+        );
+```
 
-Для упрощение работы произведено **расширение функционала пакета YDB-SDK** и добавлены новые сигнатуры функций с более простым заполнением параметров.
+Для упрощения работы произведено **расширение функционала пакета YDB-SDK** и добавлены новые сигнатуры функций с более простым заполнением параметров.
 
 ## <a name="beginTransactionQuick">beginTransactionQuick - новый метод класса Session</a>
 
